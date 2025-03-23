@@ -1,4 +1,4 @@
-name: Python Matrix Setup
+name: Python Matrix Strategy
 
 on:
   push:
@@ -6,19 +6,22 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os-version }}
+    runs-on: ${{ matrix.os }}  # Dynamically select OS based on matrix
 
     strategy:
       matrix:
-        os-version: [ ubuntu-latest , macos-latest, windows-latest]
-        py-version: [ 3.9, 3.10, 3.11, 3.12 ]
+        os: [ubuntu-latest, macos-latest, windows-latest]  # OS matrix
+        python-version: [3.9, 3.10, 3.11, 3.12]  # Python version matrix
 
     steps:
-        - name: Checkout code
-          uses: actions/setup-python@v4
-          with:
-            python-version: '${{ matrix.py-version }}'
-            architecture: x64 
-            
-        - name: Check Python3 version
-          run: python3 --version
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Ensures the code is available
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}  # Install Python dynamically
+          architecture: x64  # Ensure compatibility on macOS
+
+      - name: Check Python Version
+        run: python --version || python3 --version  # Verify installation
